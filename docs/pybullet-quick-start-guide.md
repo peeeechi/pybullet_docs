@@ -31,17 +31,17 @@ PyBulletのインストールは、
 (Python 2.x)
 
 ```sh
-(sudo)pip install PyBullet
+(sudo)pip install pybullet
 ```
 
 (Python 3.x)
 
 ```sh
-pip3 install PyBullet
+pip3 install pybullet
 ```
 
 と同じくらい簡単です。  
-これにより、PyBulletモジュールとpybullet_envsジム環境が公開されます。  
+これにより、PyBulletモジュールとpybullet_envs gym 環境が公開されます。  
 
 ### Hello PyBullet World
 
@@ -89,13 +89,12 @@ isConnectedは、physicsClientIdを指定すると、接続されている場合
 
 コマンドが特定のタイムアウト値内にサーバーによって処理されない場合、クライアントは切断されます。  
 `setTimeOut`を使用して、この値を秒単位で指定します。
-
 <figure>
-    <img src="2020-11-07-12-40-33.png" alt="Diagram with various physics client and physics server options">
+    <img src="2020-12-18-17-55-25.png" alt="Diagram with various physics client and physics server options">
     <figcaption>さまざまな物理クライアント(青)と物理サーバー(緑)のオプションを使用した図。濃い緑色のサーバーは、OpenGLデバッグの視覚化を提供します。</figcaption>
 </figule>
 
-#### connect using DIRECT, GUI
+#### DIRECT, GUI を使用した接続
 
 DIRECT接続は、トランスポート層やグラフィックス視覚化ウィンドウを使用せずに、コマンドを物理エンジンに直接送信し、コマンドの実行後にステータスを直接返します。  
   
@@ -186,7 +185,7 @@ pybullet.connect(pybullet.UDP,"localhost", 1234)
 pybullet.connect(pybullet.TCP,"localhost", 6667)
 ```
 
-#### connect using Shared Memory
+#### Shared Memory を使用した接続
 
 共有メモリ接続を許可するいくつかの物理サーバーがあります。  
 App_SharedMemoryPhysics、App_SharedMemoryPhysics_GUI、およびBullet Example Browserには、共有メモリ接続を許可するExperimental / PhysicsServerの下に1つの例があります。  
@@ -195,7 +194,7 @@ App_SharedMemoryPhysics、App_SharedMemoryPhysics_GUI、およびBullet Example 
 共有メモリを介してApp_SharedMemoryPhysics_VRに接続することもできます。これは、ヘッドマウントディスプレイと、HTCViveやOculusRift withTouchコントローラーなどの6自由度の追跡コントローラーをサポートするバーチャルリアリティアプリケーションです。  
 Valve OpenVR SDKはWindowsでのみ正しく機能するため、App_SharedMemoryPhysics_VRは、premake(できれば)またはcmakeを使用してWindowsでのみビルドできます。
 
-#### connect using UDP or TCP networking
+#### UDP or TCP ネットワーキングを使用した接続
 
 UDPネットワーキングの場合、特定のUDPポートをListenするApp_PhysicsServerUDPがあります。信頼性の高いUDPネットワーキングのためにオープンソースのenetライブラリを使用します。これにより、物理シミュレーションとレンダリングを別のマシンで実行できます。 TCPの場合、PyBulletはclsocketライブラリを使用します。これは、ファイアウォールの背後にあるマシンからロボットシミュレーションへのSSHトンネリングを使用する場合に役立ちます。たとえば、LinuxでPyBulletを使用して制御スタックまたは機械学習を実行し、HTCViveまたはRiftを使用して仮想現実でWindowsで物理サーバーを実行できます。  
   
@@ -265,3 +264,355 @@ loadURDFは、Universal Robot Description File(URDF)から物理モデルをロ�
 loadURDFの引数は次のとおりです。
 
 
+<table>
+    <tr>
+        <td>required</td>
+        <td>fileName</td>
+        <td>string</td>
+        <td>物理サーバーのファイルシステム上のURDFファイルへの相対パスまたは絶対パス。</td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>basePosition</td>
+        <td>vec3</td>
+        <td>ワールド空間座標[X、Y、Z]の指定された位置にあるオブジェクトのベースを再現します。この位置はURDFリンク位置であることに注意してください。慣性フレームがゼロ以外の場合、これは重心位置とは異なります。 resetBasePositionAndOrientationを使用して、重心の位置/方向を設定します。</td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>baseOrientation</td>
+        <td>vec4</td>
+        <td>オブジェクトのベースを、ワールドスペースクォータニオン[X、Y、Z、W]として指定された方向に作成します。 basePositionの注を参照してください。</td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>useMaximalCoordinates</td>
+        <td>int</td>
+        <td>
+            (実験的)<br/>
+            デフォルトでは、URDFファイルのジョイントは、縮小座標法を使用して作成されます。<br/>
+            ジョイントは、Featherstone Articulated Body Algorithm（ABA、Bullet 2.xのbtMultiBody）を使用してシミュレートされます。 <br/>
+            useMaximalCoordinatesオプションは、リンクごとに6自由度のリジッドボディを作成し、これらのリジッドボディ間の拘束を使用してジョイントをモデル化します。</td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>useFixedBase</td>
+        <td>int</td>
+        <td>ロードされたオブジェクトのベースを強制的に静的にします</td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>flags</td>
+        <td>int</td>
+        <td>
+            <p>次のフラグは、ビットごとのOR、|を使用して組み合わせることができます。</p>
+            <strong>URDF_MERGE_FIXED_LINKS：</strong>
+            <p>
+                これにより、URDFファイルから固定リンクが削除され、結果のリンクがマージされます。<br/>
+                さまざまなアルゴリズム（関節式ボディアルゴリズム、順運動学など）は、<br/>
+                固定ジョイントを含むジョイントの数が線形的に複雑であるため、これはパフォーマンスに優れています。
+            </p>                        
+            <strong>URDF_USE_INERTIA_FROM_FILE：</strong>
+            <p>
+                デフォルトでは、Bulletは衝突形状の質量と体積に基づいて慣性テンソルを再計算しました。<br/>
+                より正確な慣性テンソルを提供できる場合は、このフラグを使用してください。
+            </p>
+            <strong>URDF_USE_SELF_COLLISION：</strong>
+            <p>
+                デフォルトでは、Bulletは自己衝突を無効にします。このフラグで有効にできます。<br/>
+                次のフラグを使用して、自己衝突動作をカスタマイズできます。
+            </p>
+            <strong>URDF_USE_SELF_COLLISION_INCLUDE_PARENT</strong>
+            <p>
+                子と親の間の衝突を有効にします。デフォルトでは無効になっています。<br/>
+                <code>URDF_USE_SELF_COLLISION</code> フラグと一緒に使用する必要があります。
+            </p>
+            <strong>URDF_USE_SELF_COLLISION_EXCLUDE_ALL_PARENTS</strong>
+            <p>
+                子リンクとその祖先（親、親の親、ベースまで）の間の自己衝突を破棄します。 <br/>
+                <code>URDF_USE_SELF_COLLISION</code>と一緒に使用する必要があります。
+            </p>
+            <strong>URDF_USE_IMPLICIT_CYLINDER</strong>
+            <p>滑らかな暗黙の円柱を使用します。デフォルトでは、Bulletは円柱を凸包にテッセレートします。</p>
+            <strong>URDF_ENABLE_SLEEPING</strong>
+            <p>
+                ボディがしばらく動かなかった後にシミュレーションを無効にすることを可能にします。<br/>
+                アクティブボディとの相互作用により、シミュレーションが再び有効になります。
+            </p>
+            <strong>URDF_INITIALIZE_SAT_FEATURES</strong>
+            <p>
+                凸形状の三角形メッシュを作成します。<br/>
+                これにより、視覚化が向上し、GJK / EPAの代わりに分離軸テスト（SAT）を使用できるようになります。<br/>
+                setPhysicsEngineParameterを使用してSATを有効にする必要があります。
+            </p>
+            <strong>URDF_USE_MATERIAL_COLORS_FROM_MTL</strong>
+            <p>
+                URDFファイルからではなく、WavefrontOBJファイルからのRGBカラーを使用します。
+            </p>
+            <strong>URDF_ENABLE_CACHED_GRAPHICS_SHAPES</strong>
+            <p>
+                グラフィックシェイプをキャッシュして再利用します。<br/>
+                同様のグラフィックアセットを持つファイルの読み込みパフォーマンスが向上します。
+            </p>
+            <strong>URDF_MAINTAIN_LINK_ORDER</strong>
+            <p>
+                URDFファイルからのリンク順序を維持しようとします。URDFファイルで言うと、順序は、<br/>
+                ParentLink0、ChildLink1（ParentLink0に接続）、ChildLink2（ParentLink0に接続）です。<br/>
+                このフラグがない場合、順序はP0、C2、C1になる可能性があります。
+            </p>
+        </td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>globalScaling</td>
+        <td>float</td>
+        <td>globalScalingは、スケール係数をURDFモデルに適用します。</td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>physicsClientId</td>
+        <td>int</td>
+        <td>複数のサーバーに接続している場合は、1つを選択できます。</td>
+    </tr>
+</table>
+
+loadURDFは、本体の一意のID、負でない整数値を返します。
+URDFファイルをロードできない場合、この整数は負になり、有効な本体の一意のIDではありません。
+デフォルトでは、loadURDFはメッシュの衝突検出に凸包を使用します。
+静的（mass= 0、移動しない）メッシュの場合、URDFにタグを追加する: `<linkconcavent = "yes" name = "baseLink">`  ことで、メッシュを凹面にすることができます。
+例については、[samurai.urdf](https://github.com/bulletphysics/bullet3/blob/master/data/samurai.urdf)を参照してください。 
+URDF形式には他にもいくつかの拡張機能があり、例をブラウザーで調べることができます。 
+PyBulletは、URDFファイルのすべての情報を処理するわけではありません。
+サポートされている機能については、例とURDFファイルを参照してください。
+通常、機能を制御する代わりにPythonAPIがあります。
+各リンクには単一のマテリアルしか含めることができないため、マテリアルが異なる複数の視覚的な形状がある場合は、
+それらを別々のリンクに分割し、固定ジョイントで接続する必要があります。 
+Bulletの一部であるOBJ2SDFユーティリティを使用してこれを行うことができます。
+
+#### loadSDF, loadMJCF
+
+.bullet、.sdf、.mjcfなどの他のファイル形式からオブジェクトをロードすることもできます。
+これらのファイル形式は複数のオブジェクトをサポートしているため、戻り値はオブジェクトの一意のIDのリストです。
+SDF形式については、[http://sdformat.org](http://sdformat.org)で詳しく説明されています。 
+`loadSDF`コマンドは、ロボットのモデルとジオメトリに関連するSDFの一部の重要な部分のみを抽出し、カメラやライトなどに関連する多くの要素を無視します。
+`loadMJCF`コマンドは、OpenAIGymで使用されるMuJoCoMJCFxmlファイルの基本的なインポートを実行します。
+デフォルトのジョイントモーター設定に関連するloadURDFの重要な注意事項も参照し、必ず`setJointMotorControl2`を使用してください。
+
+<table>
+    <tr>
+        <td>required</td>
+        <td>fileName</td>
+        <td>string</td>
+        <td>物理サーバーのファイルシステム上のURDFファイルへの相対パスまたは絶対パス。</td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>useMaximalCoordinates</td>
+        <td>int</td>
+        <td>実験的。詳細については、loadURDFを参照してください。</td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>globalScaling</td>
+        <td>float</td>
+        <td>
+            globalScalingは、MJCFではなく、SDFおよびURDFでサポートされています。<br/>
+            すべてのオブジェクトは、この倍率（リンク、リンクフレーム、ジョイントアタッチメント、線形ジョイント制限を含む）を使用してスケーリングされます。
+            これは質量には影響せず、ジオメトリにのみ影響します。<br/>
+            必要に応じて、changeDynamicsを使用して質量を変更します。
+        </td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>physicsClientId</td>
+        <td>int</td>
+        <td>複数のサーバーに接続している場合は、1つを選択できます。</td>
+    </tr>
+</table>
+
+`loadBullet`、`loadSDF`、および`loadMJCF`は、オブジェクトの一意なIDの配列を返します。
+
+<table>
+    <tr>
+        <td>objectUniqueIds</td>
+        <td>intのlist</td>
+        <td>リストには、ロードされた各オブジェクトの一意なIDが含まれます。</td>
+    </tr>
+</table>
+
+### saveState, saveBullet, restoreState
+
+以前に保存した状態に復元した後で決定論的シミュレーションが必要な場合は、
+接点を含むすべての重要な状態情報を保存する必要があります。
+これには、`saveWorld`コマンドでは不十分です。`restoreState`コマンドを使用して、
+`saveState`（メモリ内）または`saveBullet`（ディスク上）を使用して取得したスナップショットから復元できます。
+
+`saveState`コマンドは、オプションのclientServerIdのみを入力として受け取り、状態IDを返します。
+`saveBullet`コマンドは、状態をディスク上の.bulletファイルに保存します。
+`restoreState`コマンドの入力引数は次のとおりです:
+
+<table>
+    <tr>
+        <td>optional</td>
+        <td>fileName</td>
+        <td>string</td>
+        <td>saveBulletコマンドを使用して作成された.bulletファイルのファイル名。</td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>stateId</td>
+        <td>int</td>
+        <td>saveStateによって返される状態ID</td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>clientServerId</td>
+        <td>int</td>
+        <td>複数のサーバーに接続している場合は、1つを選択できます</td>
+    </tr>
+</table>
+
+ファイル名または状態IDのいずれかが有効である必要があります。
+`restoreState`は、オブジェクトの位置と関節角度を保存された状態にリセットし、
+接触点情報を復元することに注意してください。
+`restoreState`を呼び出す前に、オブジェクトと制約が設定されていることを確認する必要があります。
+[saveRestoreState.py](https://github.com/bulletphysics/bullet3/blob/master/examples/pybullet/examples/saveRestoreState.py)の例を参照してください。
+
+#### removeState
+`removeState`を使用すると、以前に保存された状態をメモリから削除できます。
+
+#### saveWorld
+現在の世界のおおよそのスナップショットを、サーバーに保存されているPyBulletPythonファイルとして作成できます。
+`saveWorld`は、基本的な編集機能として、ロボット、関節角度、オブジェクトの位置、環境などをVRで設定するのに役立ちます。
+後で、PyBulletPythonファイルをロードするだけで世界を再作成できます。
+Pythonスナップショットには、関節角度とオブジェクト変換の初期化とともに`loadURDF`コマンドが含まれています。
+すべての設定がワールドファイルに保存されているわけではないことに注意してください。  
+
+入力引数は次のとおりです:
+
+<table>
+    <tr>
+        <td>required</td>
+        <td>fileName</td>
+        <td>string</td>
+        <td>PyBulletファイルのファイル名。</td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>clientServerId</td>
+        <td>int</td>
+        <td>複数のサーバーに接続している場合は、1つを選択できます</td>
+    </tr>
+</table>
+
+### createCollisionShape/VisualShape
+世界で推奨されている最も簡単な方法は、読み込み関数（`loadURDF`/`SDF`/`MJCF`/`Bullet`）を使用することですが、
+プログラムで衝突形状と視覚形状を作成し、`createMultiBody`を使用してそれらを使用してマルチボディを作成することもできます。
+Bullet PhysicsSDKの[createMultiBodyLinks.py](https://github.com/bulletphysics/bullet3/blob/master/examples/pybullet/examples/createMultiBodyLinks.py)と[createVisualShape.py](https://github.com/bulletphysics/bullet3/blob/master/examples/pybullet/examples/createVisualShape.py)の例を参照してください。
+
+createCollisionShapeの入力パラメーターは次のとおりです:
+
+
+<table>
+    <tr>
+        <td>required</td>
+        <td>shapeType</td>
+        <td>int</td>
+        <td>GEOM_SPHERE, GEOM_BOX, GEOM_CAPSULE, GEOM_CYLINDER, GEOM_PLANE, GEOM_MESH, GEOM_HEIGHTFIELD</td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>radius</td>
+        <td>float</td>
+        <td>デフォルト0.5: GEOM_SPHERE、GEOM_CAPSULE、GEOM_CYLINDER</td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>halfExtents</td>
+        <td>vec3 list of 3 floats</td>
+        <td>デフォルト[1,1,1]：GEOM_BOXの場合</td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>height</td>
+        <td>float</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>fileName</td>
+        <td>string</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>meshScale</td>
+        <td>vec3 list of 3 floats</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>planeNormal</td>
+        <td>vec3 list of 3 floats</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>flags</td>
+        <td>int</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>collisionFramePosition</td>
+        <td>vec3</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>collisionFrameOrientation</td>
+        <td>vec4</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>vertices</td>
+        <td>list of vec3</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>indices</td>
+        <td>list of int</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>heightfieldTextureScaling</td>
+        <td>float</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>numHeightfieldRows</td>
+        <td>int</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>numHeightfieldColumns</td>
+        <td>int</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>numHeightfieldColumns</td>
+        <td>int</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>physicsClientId</td>
+        <td>int</td>
+        <td></td>
+    </tr>
+</table>
