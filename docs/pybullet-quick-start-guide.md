@@ -10,7 +10,7 @@ PyBulletは、順方向ダイナミクスシミュレーション、逆方向ダ
 [Bullet Physics SDK](http://github.com/bulletphysics/bullet3) には、シミュレートされたMinitaur四足動物、TensorFlow推論を使用して実行されるヒューマノイド、オブジェクトをつかむKUKAアームなどのPyBulletロボットの例が含まれています。  
 縮小座標マルチボディ、リジッドボディ、および変形可能オブジェクトは、[この論文](https://drive.google.com/file/d/0Bz3vEa19XOYGNWdZWGpMdUdqVmZ5ZVBOaEh4ZnpNaUxxZFNV/view?usp=sharing)と同様に、統合されたLCP制約ソルバーによって処理されます。
 
-![image-1](2020-11-07-11-57-55.png)
+![image-1](2020-12-18-17-51-03.png)
 
 物理シミュレーションとは別に、CPUレンダラー(TinyRenderer)とOpenGL 3.xのレンダリングと視覚化、およびHTCViveやOculusRiftなどのバーチャルリアリティヘッドセットのサポートにより、レンダリングへのバインドがあります。  
 PyBulletには、衝突検出クエリ(最も近い点、オーバーラップペア、光線交差テストなど)を実行し、デバッグレンダリング(デバッグラインとテキスト)を追加する機能もあります。 PyBulletには、共有メモリ、UDP、およびTCPネットワーク用のクロスプラットフォームの組み込みクライアントサーバーサポートがあります。そのため、WindowsVRサーバーに接続しているLinuxでPyBulletを実行できます。  
@@ -255,7 +255,7 @@ setGravity入力パラメーターは次のとおりです:(戻り値なし)
 
 ### loadURDF, loadSDF, loadMJCF
 
-loadURDFは、Universal Robot Description File(URDF)から物理モデルをロードするコマンドを物理サーバーに送信します。 URDFファイルは、ROSプロジェクト(Robot Operating System)がロボットやその他のオブジェクトを記述するために使用され、WillowGarageとOpen Source Robotics Foundation(OSRF)によって作成されました。多くのロボットには公開URDFファイルがあります。説明とチュートリアルはここにあります:[http://wiki.ros.org/urdf/Tutorials](http://wiki.ros.org/urdf/Tutorials)
+loadURDFは、Universal Robot Description File(URDF)から物理モデルをロードするコマンドを物理サーバーに送信します。 URDFファイルは、ROSプロジェクト(Robot Operating System)がロボットやその他のオブジェクトを記述するために使用され、WillowGarageとOpen Source Robotics Foundation(OSRF)によって作成されました。多くのロボットには公開URDFファイルがあります。説明とチュートリアルは[ここ](http://wiki.ros.org/urdf/Tutorials)にあります
 
 重要な注意：ほとんどのジョイント(スライダー、回転、連続)では、自由な動きを防ぐモーターがデフォルトで有効になっています。これは、非常に高摩擦のハーモニックドライブを備えたロボットジョイントに似ています。 `pybullet.setJointMotorControl2` を使用して、ジョイントモーター制御モードとターゲット設定を設定する必要があります。詳細については、`setJointMotorControl2API` を参照してください。
 
